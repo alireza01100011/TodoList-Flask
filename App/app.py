@@ -26,7 +26,8 @@ with app.app_context() :
 # HomePage
 @app.route('/')
 def home():
-    return render_template('home.html' , title='Home')
+    tasks = Todo.query.all()
+    return render_template('home.html' , title='Home' , tasks=tasks)
 
 @app.route('/AddTodo')
 def AddTodo():
