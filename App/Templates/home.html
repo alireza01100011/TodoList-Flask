@@ -7,7 +7,7 @@
             <h5 class="card-header">{{task.Title}}</h5>
             <div class="card-body">
                 <p class="card-text">{{task.Content}}</p>
-                <a href="#" class="btn btn-primary">Delete</a>
+                <a href="{{url_for('Delete' , ID=task.Id)}}" class="btn btn-primary">Delete</a>
                 <a href="#" class="btn btn-primary">Edite</a>
                 <a href="#" class="btn btn-primary">Done</a>
             </div>
