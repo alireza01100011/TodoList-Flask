@@ -1,4 +1,4 @@
-from flask import Flask , render_template , redirect , url_for
+from flask import Flask , render_template , redirect , url_for , request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -17,7 +17,7 @@ class Todo(db.Model):
     Title = db.Column(db.String(100) , unique=True, nullable=False)
     Content = db.Column(db.Text , unique=False , nullable=False)
     CreationTime = db.Column(db.DateTime , default=datetime.now , unique=False , nullable=False)
-    ReminderTime = db.Column(db.DateTime , unique=False , nullable=False)
+    ReminderTime = db.Column(db.Text , unique=False , nullable=False)
 
 # Create DataBase
 with app.app_context() :
@@ -28,6 +28,23 @@ with app.app_context() :
 def home():
     return render_template('home.html' , title='Home')
 
+@app.route('/AddTodo')
+def AddTodo():
+    return render_template('addtodo.html' , title='Add Todo')
 
+@app.route('/AddTask/', methods=('GET', 'POST'))
+def CreateTodo():
+    if request.method == 'POST':
+        try:
+            newtask = Todo(
+            Title=request.form['title'],
+            Content= request.form['content'] ,
+            ReminderTime =request.form['time'])
+        except KeyError:
+            return redirect(url_for('AddTodo'))
+        
+        db.session.add(newtask)
+        db.session.commit()
+        return redirect(url_for('home'))
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div
+        style="width: 600px ;  height: 600px; margin: 50px 0px auto 26%; background-color: #48afeb; border: 2px solid; border-radius: 10px; padding:20px;">
+        <div style="width: 500px ;  height: 600px; padding:10px 0px 0px 50px;">
+            <form action="/AddTask" method="post">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Enter Title Task *</label>
+                    <input type="text" class="form-control" name="title">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Enter Your Task Description </label>
+                    <input type="text" class="form-control" name="content">
+                    <small id="emailHelp" class="form-text text-muted">Write A Description Of Your Task, It Can Be An
+                        Explanation </small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Specify The Reminder Time *</label>
+                    <input type="time" class="form-control" name="time">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block"
+                        style="margin-top: 50px;">Submit</button>
+                </div>
+        </div>
+
+{% endblock content %}
