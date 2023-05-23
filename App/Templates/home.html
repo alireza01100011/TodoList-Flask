@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="Box" style="width: 800px; height:auto; margin: 50px 0px auto 20%;">
+    
     {% for task in tasks %}
         <div class="card " style="margin: 10px 0px 30px auto; ">
             {% if task.Done == 1 %}
@@ -12,7 +13,8 @@
 
             <div class="card-body">
                 {% if task.Done == 0 %}
-                    <p class="card-text">{{task.Content}}</p>
+                    <p class="card-text"> <img src="{{ url_for('static', filename='/Content.svg') }}" width="20px" height="20px" style="margin-bottom: 2px;">  Description : {{task.Content}}</p>
+                     <p class="card-text"> <img src="{{ url_for('static', filename='/Time.svg') }}" width="20px" height="20px" style="margin-bottom: 2px;"> Time To Remember  : {{task.ReminderTime}}</p>
                     <a href="{{url_for('Edite' , ID=task.Id)}}"  class="btn btn-primary" >Edite</a>
 
                     <a href="{{url_for('Done' , ID=task.Id)}}" class="btn btn-primary">Done</a>
