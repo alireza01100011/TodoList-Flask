@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="Box" style="width: 800px; margin: 50px 0px auto 20%; ">
+<div class="Box" style="width: 800px; height:auto; margin: 50px 0px auto 20%;">
     {% for task in tasks %}
-        <div class="card ">
-            <h5 class="card-header">{{task.Title}}</h5>
+        <div class="card " style="margin: 10px 0px 30px auto; ">
+            {% if task.Done == 1 %}
+                <s><h5 class="card-header">{{task.Title}}</h5></s>
+            {% else %}
+                <h5 class="card-header">{{task.Title}}</h5>
+            {% endif %}
+
             <div class="card-body">
-                <p class="card-text">{{task.Content}}</p>
+                {% if task.Done == 0 %}
+                    <p class="card-text">{{task.Content}}</p>
+                    <a href="#" class="btn btn-primary" >Edite</a>
+
+                    <a href="{{url_for('Done' , ID=task.Id)}}" class="btn btn-primary">Done</a>
+                {% else %}
+                    <s><p class="card-text">{{task.Content}}</p></s>
+                {% endif %}
                 <a href="{{url_for('Delete' , ID=task.Id)}}" class="btn btn-primary">Delete</a>
-                <a href="#" class="btn btn-primary">Edite</a>
-                <a href="#" class="btn btn-primary">Done</a>
             </div>
         </div>
     {% endfor %}

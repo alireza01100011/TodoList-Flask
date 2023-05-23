@@ -18,7 +18,7 @@ class Todo(db.Model):
     Content = db.Column(db.Text , unique=False , nullable=False)
     CreationTime = db.Column(db.DateTime , default=datetime.now , unique=False , nullable=False)
     ReminderTime = db.Column(db.Text , unique=False , nullable=False)
-
+    Done = db.Column(db.Integer , default=0 , unique=False , nullable=False)
 
 # Create DataBase
 with app.app_context() :
@@ -34,6 +34,14 @@ def home():
 def Delete(ID):
     task = Todo.query.get(ID)
     db.session.delete(task)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+
+@app.route('/Done/<ID>')
+def Done(ID):
+    task = Todo.query.get(ID)
+    task.Done = 1
     db.session.commit()
     return redirect(url_for('home'))
 
