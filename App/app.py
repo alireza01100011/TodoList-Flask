@@ -30,6 +30,9 @@ def home():
     tasks = Todo.query.all()
     return render_template('home.html' , title='Home' , tasks=tasks)
 
+@app.route('/about')
+def about():
+    return redirect('https://github.com/alireza536')
 @app.route('/Delete/<ID>')
 def Delete(ID):
     task = Todo.query.get(ID)
