@@ -16,10 +16,11 @@ class Todo(db.Model):
     Id = db.Column(db.Integer, primary_key=True)
     Title = db.Column(db.String(100) , unique=True, nullable=False)
     Content = db.Column(db.Text , unique=False , nullable=False)
-    CreationTime = db.Column(db.DateTime , default=datetime.now , unique=False , nullable=False)
     ReminderTime = db.Column(db.Text , unique=False , nullable=False)
     Done = db.Column(db.Integer , default=0 , unique=False , nullable=False)
-
+    
+    def __repr__(self):
+        return f'Todo({self.Id} , {self.Title} , {self.Content} , {self.ReminderTime} , {self.Done})'
 # Create DataBase
 with app.app_context() :
     db.create_all()
@@ -27,12 +28,22 @@ with app.app_context() :
 # HomePage
 @app.route('/')
 def home():
-    tasks = Todo.query.all()
+    items = Todo.query.all()
+    tasks = [None for i in range(len(items))]
+    SortDeata = sorted([task.ReminderTime for task in items])
+    for task in items:
+        tasks.insert(SortDeata.index(task.ReminderTime) , task)
+    
+    for task in tasks : 
+        if task == None : tasks.remove(task)
+
     return render_template('home.html' , title='Home' , tasks=tasks)
+
 
 @app.route('/about')
 def about():
     return redirect('https://github.com/alireza536')
+
 @app.route('/Delete/<ID>')
 def Delete(ID):
     task = Todo.query.get(ID)
@@ -86,4 +97,4 @@ def edite(ID):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True , host='192.168.1.9')
