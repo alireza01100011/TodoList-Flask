@@ -13,7 +13,7 @@
             <div class="card-body">
                 {% if task.Done == 0 %}
                     <p class="card-text">{{task.Content}}</p>
-                    <a href="#" class="btn btn-primary" >Edite</a>
+                    <a href="{{url_for('Edite' , ID=task.Id)}}"  class="btn btn-primary" >Edite</a>
 
                     <a href="{{url_for('Done' , ID=task.Id)}}" class="btn btn-primary">Done</a>
                 {% else %}

@@ -47,21 +47,40 @@ def Done(ID):
 
 @app.route('/AddTodo')
 def AddTodo():
-    return render_template('addtodo.html' , title='Add Todo')
+    return render_template('from.html' , title='Add Todo' , value_content='' , value_title='' , value_time='' , URL_Action='AddTask' , ID='')
+
 
 @app.route('/AddTask/', methods=('GET', 'POST'))
 def CreateTodo():
     if request.method == 'POST':
-        try:
+        try :
             newtask = Todo(
-            Title=request.form['title'],
-            Content= request.form['content'] ,
-            ReminderTime =request.form['time'])
+                Title=request.form['title'],
+                Content= request.form['content'] ,
+                ReminderTime =request.form['time'])
         except KeyError:
             return redirect(url_for('AddTodo'))
         
         db.session.add(newtask)
         db.session.commit()
         return redirect(url_for('home'))
+
+@app.route('/Edite/<int:ID>')
+def Edite(ID):
+    task = Todo.query.get(ID)
+    return render_template('from.html' , title=f'Edite {task.Title}' , value_content=f'{task.Content}' , value_title=f'{task.Title}' , value_time='05:02' , URL_Action='-Edite' , ID=f'{int(ID)}')
+
+@app.route('/-Edite/<ID>' , methods=('GET', 'POST'))
+def edite(ID):
+    if request.method == 'POST':
+        task = Todo.query.get(ID)
+        task.Id = int(ID)
+        task.Title  = request.form['title']
+        task.Content = request.form['content']
+        task.ReminderTime = request.form['time']
+        db.session.commit()
+        return redirect(url_for('home'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
