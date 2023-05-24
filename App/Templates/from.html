@@ -3,10 +3,11 @@
 {% block content %}
 
     <div class="Box">
-        <div style="width: 500px ;  height: 600px; padding:10px 0px 0px 50px;">
+        <center><h3 style="font-size: 20px;">{{Title_From}}</h3></center>
+        <div style="width: 400px ; height: 600px; padding:10px 0px 0px 50px;">
             <form action="/{{URL_Action}}/{{ID}}" method="post">
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Enter Title Task *</label>
+                    <label for="exampleInputEmail1">Enter Name Task *</label>
                     <input type="text" class="form-control" name="title" value="{{value_title}}" required>
                 </div>
                 <div class="form-group">

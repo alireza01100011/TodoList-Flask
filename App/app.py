@@ -1,6 +1,9 @@
 from flask import Flask , render_template , redirect , url_for , request
 from flask_sqlalchemy import SQLAlchemy
+
 from datetime import datetime
+
+# <================================App And DataBase==================================>
 
 # Intensification Of Database Manager 
 db = SQLAlchemy()
@@ -21,29 +24,55 @@ class Todo(db.Model):
     
     def __repr__(self):
         return f'Todo({self.Id} , {self.Title} , {self.Content} , {self.ReminderTime} , {self.Done})'
+
 # Create DataBase
 with app.app_context() :
     db.create_all()
 
+# Returns A Sorted List Of All Tasks 
+def GetTask()->list[Todo]:
+    # Get All Tasks
+    items = Todo.query.all()
+    # Build Storage Space
+    tasks = [None for i in range(len(items))]
+    # Sort Data By Time
+    SortDeata = sorted([task.ReminderTime for task in items])
+    # Add Tasks To The List 
+    for task in items:
+        tasks[SortDeata.index(task.ReminderTime)] = task
+    
+    return tasks
+
+
+
+
+# <================================Home==================================>
 # HomePage
 @app.route('/')
 def home():
-    items = Todo.query.all()
-    tasks = [None for i in range(len(items))]
-    SortDeata = sorted([task.ReminderTime for task in items])
-    for task in items:
-        tasks.insert(SortDeata.index(task.ReminderTime) , task)
+    # Get All Task
+    tasks = GetTask()
     
-    for task in tasks : 
-        if task == None : tasks.remove(task)
+    return render_template(
+        'home.html', # Html File
+        title='Todo List', # Title Web Page
+        tasks=tasks, # List Tasks
+        Title_From = 'Add New Task', # Title From
+        URL_Action='AddTask', # Url -> Action Form
+        ID='', # Defulte
+        value_title='', # Defulte
+        value_content='', # Defulte
+        value_time='' # Defulte
+        )
 
-    return render_template('home.html' , title='Home' , tasks=tasks)
-
-
+# <================================About==================================>
+# About Page
 @app.route('/about')
 def about():
     return redirect('https://github.com/alireza536')
 
+# <================================Delete Task==================================>
+# Delete Task
 @app.route('/Delete/<ID>')
 def Delete(ID):
     task = Todo.query.get(ID)
@@ -51,7 +80,8 @@ def Delete(ID):
     db.session.commit()
     return redirect(url_for('home'))
 
-
+# <================================Done Task==================================>
+# Task Done Operation 
 @app.route('/Done/<ID>')
 def Done(ID):
     task = Todo.query.get(ID)
@@ -59,42 +89,73 @@ def Done(ID):
     db.session.commit()
     return redirect(url_for('home'))
 
-@app.route('/AddTodo')
-def AddTodo():
-    return render_template('from.html' , title='Add Todo' , value_content='' , value_title='' , value_time='' , URL_Action='AddTask' , ID='')
-
-
+# <================================Add Task==================================>
+# Add New Task
+# It Receives The Information From The Form And Adds The New Task 
 @app.route('/AddTask/', methods=('GET', 'POST'))
-def CreateTodo():
+def AddNewTask():
     if request.method == 'POST':
         try :
+            # Create New Task
             newtask = Todo(
                 Title=request.form['title'],
                 Content= request.form['content'] ,
                 ReminderTime =request.form['time'])
-        except KeyError:
-            return redirect(url_for('AddTodo'))
         
+        except KeyError:
+            return redirect(url_for('home'))
+        
+        # Add New Task To Database
         db.session.add(newtask)
         db.session.commit()
+
         return redirect(url_for('home'))
 
+# <================================Edite Task==================================>
+# Edit Task 
+# This Function Prepares The Main Page For Editing 
 @app.route('/Edite/<int:ID>')
 def Edite(ID):
+    # Get The Selected Task For Editing 
     task = Todo.query.get(ID)
-    return render_template('from.html' , title=f'Edite {task.Title}' , value_content=f'{task.Content}' , value_title=f'{task.Title}' , value_time='05:02' , URL_Action='-Edite' , ID=f'{int(ID)}')
+    # Get All Tasks Sorted For Display 
+    tasks = GetTask()
+    # Send Information To The Main Page 
+    return render_template(
+            'home.html', # Html File
+            title='Todo List', # Title
+            tasks=tasks, # All Tasks For Display 
+            Title_From = f'Edite Todo : {task.Title}', # The Title Of The Form 
+            URL_Action='-Edite', # The Address That Will Send The Data Form In The End {Action Url}
+            ID=f'{int(ID)}', # Task Id Selected For Editing 
+            value_title=f'{task.Title}' , # Task Name Or Title In The Form Field 
+            value_content=f'{task.Content}', # Task Description In The Form Field 
+            value_time=f'{task.ReminderTime}', # Task Reminder Time In The Form Field 
+            )
 
+
+# This Function Applies The Received Values To Edit The Task In The Database 
 @app.route('/-Edite/<ID>' , methods=('GET', 'POST'))
 def edite(ID):
     if request.method == 'POST':
+        # Get Task
         task = Todo.query.get(ID)
+        # Set Id - [ To Not Change The ID ]
         task.Id = int(ID)
+        # Set New Title
         task.Title  = request.form['title']
+        # Set New Description
         task.Content = request.form['content']
+        # Set New Reminder Time
         task.ReminderTime = request.form['time']
+        # Seve
         db.session.commit()
+        # Refresh The Page To Show The Changes 
         return redirect(url_for('home'))
 
+# <================================Mian(Run)==================================>
 
 if __name__ == '__main__':
-    app.run(debug=True , host='192.168.1.9')
+    # toast = ToastNotifier()
+
+    app.run(debug=True , host='192.168.1.9' , port=80)
