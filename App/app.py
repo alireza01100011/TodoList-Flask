@@ -192,4 +192,4 @@ if __name__ == '__main__':
     
     open_new_tab(f'http://{IP}:{PORT}')
     Thread(target=Reminder).start()
-    app.run(debug=True , host=IP , port=int(PORT))
+    app.run(debug=False , host=IP , port=int(PORT))
