@@ -1,5 +1,7 @@
 from flask import Flask , render_template , redirect , url_for , request
 from flask_sqlalchemy import SQLAlchemy
+from webbrowser import open
+from winotify import Notification , audio
 
 from datetime import datetime
 
@@ -156,6 +158,7 @@ def edite(ID):
 # <================================Mian(Run)==================================>
 
 if __name__ == '__main__':
-    # toast = ToastNotifier()
+    
+    open('http://192.168.1.9:1401')
 
-    app.run(debug=True , host='192.168.1.9' , port=80)
+    app.run(debug=True , host='192.168.1.9' , port=1401)
