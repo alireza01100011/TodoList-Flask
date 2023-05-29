@@ -153,6 +153,10 @@ def edite(ID):
         # Refresh The Page To Show The Changes 
         return redirect(url_for('home'))
 
+
+@app.route('/home2')
+def home2():
+    return render_template('home.html')
 # <================================Mian(Run)==================================>
 
 if __name__ == '__main__':
