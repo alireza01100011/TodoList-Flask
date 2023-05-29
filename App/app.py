@@ -1,9 +1,17 @@
 from flask import Flask , render_template , redirect , url_for , request
 from flask_sqlalchemy import SQLAlchemy
-from webbrowser import open
+from webbrowser import open_new_tab
 from winotify import Notification , audio
 
 from datetime import datetime
+from time import sleep
+from threading import Thread
+from requests import get
+
+import pickle
+
+IP = '127.0.0.1'
+PORT = '1401'
 
 # <================================App And DataBase==================================>
 
@@ -155,10 +163,33 @@ def edite(ID):
         # Refresh The Page To Show The Changes 
         return redirect(url_for('home'))
 
+@app.route('/GetAllData')
+def ReturnAllTask():
+    return pickle.dumps(GetTask())
 # <================================Mian(Run)==================================>
+def Send_Notification(Url=f'http://{IP}:{PORT}' , *args , **kwargs ):
+    Noti = Notification(*args , **kwargs , icon=r'F:\Alireza\Python\TodoList-Flask\App\static\icon.ico' , app_id='Todo List' , duration='short')
+    Noti.set_audio(audio.Reminder , True)
+    Noti.add_actions(label='Todo List' , launch=Url)
+    Noti.add_actions(label='Done' , launch=f'{Url}')
+    Noti.show()
+
+def Reminder():
+    sleep(5)
+    Ids = []
+    while True:
+        sleep(10)
+        try : 
+            Tasks = get(f'http://{IP}:{PORT}/GetAllData').content
+        except OSError : pass
+        for task in pickle.loads(Tasks):
+            if task.Done == 1 : continue
+            if f"{task.ReminderTime}" == f"{datetime.now().strftime('%H:%M')}" and task.Id not in Ids:
+                Send_Notification(title=task.Title,msg=task.Content)
+                Ids.append(task.Id)
 
 if __name__ == '__main__':
     
-    open('http://192.168.1.9:1401')
-
-    app.run(debug=True , host='192.168.1.9' , port=1401)
+    open_new_tab('http://{IP}:{PORT}')
+    Thread(target=Reminder).start()
+    app.run(debug=False , host=IP , port=int(PORT))
