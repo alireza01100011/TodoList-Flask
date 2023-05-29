@@ -1,7 +1,7 @@
 # TodoList-Flask ( One In Two Lists With Flask  ) 
 ![python-coding-mistakes](https://github.com/alireza536/TodoList-Flask/assets/95130614/8c697a8b-5256-418f-91eb-750f7ce2d4b6)
 
-A Program In Two Simple Lists With Flask  
+A Simple To Do List Program With Flask  
 
 
 ## Installation And Usage
