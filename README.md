@@ -37,6 +37,9 @@ A Simple To Do List Program With Flask
 	
 > Commands For Setup In Windows :
 
-	Download And Run The Windows Setup File {Run Installer.exe}
+	cd [Source Path]
+  
+	pip install -r req.txt
+  
+	python app.py
 
-* [Download The Windows Installer]()
